@@ -10,5 +10,9 @@ public class Crea {
         X,
         O;
     }
+    public Crea(){
+        this.idusuario = new ArrayList<>();
+        this.idpartida = new ArrayList<>();
+    }
 
 }

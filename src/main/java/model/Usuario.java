@@ -1,8 +1,11 @@
 package model;
 
+import java.util.List;
+
 public class Usuario {
 
     private int id_usuario;
+
     private String nombre;
     private String email;
     private String password;
@@ -14,7 +17,13 @@ public class Usuario {
         this.email = email;
         this.password = password;
     }
-
+    public Usuario(int id, String nombre, String email, String password, List<Partidas> partidas)
+        {
+        this.id_usuario = id;
+        this.nombre = nombre;
+        this.email = email;
+        this.password = password;
+        }
     public String getNombre() {
 
         return nombre;

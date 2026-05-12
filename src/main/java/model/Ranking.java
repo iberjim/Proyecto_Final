@@ -11,11 +11,11 @@ public class Ranking {
     private ArrayList<Usuario> id_usuarios;
 
     public enum modo_patida {
-        facil,
-        medio,
-        dificil,
-        loco,
-        unoversusuno;
+        FACIL,
+        MEDIO,
+        DIFICIL,
+        LOCO,
+        UNOVSUNO
     }
     public Ranking(int idranking, int victorias, int derrotas, int empates, int puntuaciones ) {
         this.idranking = idranking;
@@ -23,6 +23,7 @@ public class Ranking {
         this.derrotas = derrotas;
         this.empates = empates;
         this.puntuaciones = puntuaciones;
+        this.id_usuarios = new ArrayList<>();
     }
 
 
