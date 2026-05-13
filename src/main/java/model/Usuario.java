@@ -17,6 +17,11 @@ public class Usuario {
         this.email = email;
         this.password = password;
     }
+    public Usuario( String nombre, String email, String password) {
+        this.nombre = nombre;
+        this.email = email;
+        this.password = password;
+    }
     public Usuario(int id, String nombre, String email, String password, List<Partidas> partidas)
         {
         this.id_usuario = id;

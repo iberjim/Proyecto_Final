@@ -14,7 +14,7 @@ public class UsuarioDAO {
     private final static String SQL_ALL = "SELECT * FROM usuario";
     private final static String SQL_FIND_BY_ID = "SELECT * FROM usuario WHERE idUsuario = ?";
     private final static String SQL_FIND_BY_NAME = "SELECT FROM usuario WHERE nombre = ?";
-    private final static String SQL_INSERT = "INSERT INTO usuario (nombre) VALUES (?)";
+    private final static String SQL_INSERT = "INSERT INTO usuario (nombre, email, password) VALUES (?, ?, ?)";
     private final static String SQL_UPDATE = "UPDATE usuario SET nombre = ? WHERE idUsuario = ?";
     private final static String SQL_DELETE = "DELETE FROM usuario WHERE idusuario = ?";
 
