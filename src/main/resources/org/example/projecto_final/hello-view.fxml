@@ -1,16 +1,20 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
 <?import javafx.geometry.Insets?>
-<?import javafx.scene.control.Label?>
-<?import javafx.scene.layout.VBox?>
-
 <?import javafx.scene.control.Button?>
-<VBox alignment="CENTER" spacing="20.0" xmlns:fx="http://javafx.com/fxml"
-      fx:controller="org.example.projecto_final.HelloController">
-    <padding>
-        <Insets bottom="20.0" left="20.0" right="20.0" top="20.0"/>
-    </padding>
+<?import javafx.scene.layout.VBox?>
+<?import javafx.scene.text.Font?>
 
-    <Label fx:id="welcomeText"/>
-    <Button text="Hello!" onAction="#onHelloButtonClick"/>
+<VBox alignment="CENTER" prefHeight="377.0" prefWidth="560.0" spacing="20.0" xmlns="http://javafx.com/javafx/26" xmlns:fx="http://javafx.com/fxml/1" fx:controller="org.example.projecto_final.HelloController">
+    <padding>
+        <Insets bottom="20.0" left="20.0" right="20.0" top="20.0" />
+    </padding>
+   <Button fx:id="btnIA" mnemonicParsing="false" onAction="#ElegirModo" prefHeight="85.0" prefWidth="122.0" text="1 VS IA" textFill="RED">
+      <font>
+         <Font name="System Italic" size="23.0" />
+      </font></Button>
+   <Button fx:id="btnDUO" mnemonicParsing="false" onAction="#ElegirModo" prefHeight="89.0" prefWidth="115.0" text="1 VS 1">
+      <font>
+         <Font name="Franklin Gothic Medium Italic" size="23.0" />
+      </font></Button>
 </VBox>
