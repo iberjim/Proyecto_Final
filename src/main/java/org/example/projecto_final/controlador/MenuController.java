@@ -1,9 +1,11 @@
-package controlador;
+package org.example.projecto_final.controlador;
 
+import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 
-import java.awt.*;
-import java.awt.event.ActionEvent;
+
+import javafx.scene.control.Button;      // Para tus botones btnIA y btnDuo
+
 
 public class MenuController {
 
@@ -14,7 +16,7 @@ public class MenuController {
     private Button btnDuo;
 
     @FXML
-    void onElegirModo(ActionEvent event) {
+    void ElegirModo(ActionEvent event) {
         if (event.getSource() == btnIA) {
             System.out.println("Has elegido jugar contra la IA");
         } else {

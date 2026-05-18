@@ -1,4 +1,4 @@
-package model;
+package org.example.projecto_final.model;
 
 public class Partidas {
     private Usuario usuario;

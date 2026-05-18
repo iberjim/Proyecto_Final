@@ -1,4 +1,4 @@
-package dataaccess;
+package org.example.projecto_final.dataaccess;
 
 import java.sql.Connection;
 import java.sql.DriverManager;

@@ -1,4 +1,4 @@
-package model;
+package org.example.projecto_final.model;
 
 import java.util.ArrayList;
 

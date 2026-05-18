@@ -1,8 +1,8 @@
-package DAO;
+package org.example.projecto_final.DAO;
 
-import dataaccess.ConnectionBD;
-import model.Partidas;
-import model.Usuario;
+import org.example.projecto_final.dataaccess.ConnectionBD;
+import org.example.projecto_final.model.Partidas;
+import org.example.projecto_final.model.Usuario;
 
 import java.sql.*;
 import java.util.ArrayList;

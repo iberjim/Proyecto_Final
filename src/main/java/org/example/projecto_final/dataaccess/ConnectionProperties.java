@@ -1,8 +1,10 @@
-package dataaccess;
+package org.example.projecto_final.dataaccess;
 
-import javax.xml.bind.annotation.XmlAccessType;
-import javax.xml.bind.annotation.XmlAccessorType;
-import javax.xml.bind.annotation.XmlRootElement;
+import jakarta.xml.bind.annotation.XmlAccessType;
+
+import jakarta.xml.bind.annotation.XmlAccessorType;
+
+import jakarta.xml.bind.annotation.XmlRootElement;
 import java.io.Serializable;
 @XmlAccessorType(XmlAccessType.FIELD)
 @XmlRootElement (name="connection")

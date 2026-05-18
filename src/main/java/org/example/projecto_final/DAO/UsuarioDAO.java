@@ -1,8 +1,8 @@
-package DAO;
+package org.example.projecto_final.DAO;
 
-import dataaccess.ConnectionBD;
-import model.Partidas;
-import model.Usuario;
+import org.example.projecto_final.dataaccess.ConnectionBD;
+import org.example.projecto_final.model.Partidas;
+import org.example.projecto_final.model.Usuario;
 
 
 
@@ -13,10 +13,21 @@ public class UsuarioDAO {
 
     private final static String SQL_ALL = "SELECT * FROM usuario";
     private final static String SQL_FIND_BY_ID = "SELECT * FROM usuario WHERE idUsuario = ?";
-    private final static String SQL_FIND_BY_NAME = "SELECT FROM usuario WHERE nombre = ?";
+    private final static String SQL_FIND_BY_NAME = "SELECT * FROM usuario WHERE nombre = ?";
     private final static String SQL_INSERT = "INSERT INTO usuario (nombre, email, password) VALUES (?, ?, ?)";
     private final static String SQL_UPDATE = "UPDATE usuario SET nombre = ? WHERE idUsuario = ?";
     private final static String SQL_DELETE = "DELETE FROM usuario WHERE idusuario = ?";
+
+    public static boolean insert(Usuario u) throws SQLException {
+
+        try (PreparedStatement ps = ConnectionBD.getInstance().getConnection().prepareStatement(SQL_INSERT)) {
+           ps.setString(1, u.getNombre());
+           ps.setString(2, u.getEmail());
+           ps.setString(3, u.getPassword());
+
+           return ps.executeUpdate() > 0; // Devuelve true si se insertó al menos una fila
+        }
+    }
 
 public static List<Usuario> findAll() throws SQLException{
 
