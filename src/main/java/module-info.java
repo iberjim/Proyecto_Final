@@ -10,4 +10,5 @@ module org.example.projecto_final {
     opens org.example.projecto_final.dataaccess to jakarta.xml.bind;
 
     exports org.example.projecto_final;
+    exports org.example.projecto_final.utils;
 }
