@@ -17,7 +17,7 @@ public class MenuController {
     void ElegirModo(ActionEvent event) {
         if (event.getSource() == btnIA) {
             System.out.println("Has elegido jugar contra la IA");
-            Utils.cambiarPantalla(event, "/org/example/projecto_final/vistas/Registro.fxml");
+            Utils.cambiarPantalla(event, "/org/example/projecto_final/vistas/Resgistro.fxml");
         } else {
             System.out.println("Has elegido Persona vs Persona");
             Utils.cambiarPantalla(event, "/org/example/projecto_final/vistas/Tablero.fxml");

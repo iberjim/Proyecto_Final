@@ -61,4 +61,8 @@ public class Juego {
     public boolean hayGanador() {
         return hayGanador;
     }
+
+    public int[] getTablero() {
+        return this.tablero;
+    }
 }
