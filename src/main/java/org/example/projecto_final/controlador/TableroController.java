@@ -17,7 +17,7 @@ public class TableroController {
     private Juego partida;
     private InteligenciaArtificial ia;
 
-    // ⚙️ CONTROL DE MODOS Y DIFICULTAD
+    // CONTROL DE MODOS Y DIFICULTAD
     private boolean contraIA = true; // Cambiar a 'false' si en el menú eligen 2 Jugadores
     private String dificultadSeleccionada = "difícil"; // 'fácil', 'medio' o 'difícil'
 
@@ -56,7 +56,7 @@ public class TableroController {
             // Si la partida continúa, cambiamos de turno
             partida.cambiarTurno();
 
-            // 🤖 RAMIFICACIÓN DE MODOS DE JUEGO:
+            // RAMIFICACIÓN DE MODOS DE JUEGO:
             if (contraIA) {
                 // MODO CONTRA LA IA:
                 lblTurno.setText("Turno de la IA (O)...");
