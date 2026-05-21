@@ -22,7 +22,7 @@ public class Juego {
                 hayGanador = true;
             }
         }
-        return exito; // Único return
+        return exito; 
     }
 
     public boolean comprobarSiGana() {
@@ -50,7 +50,7 @@ public class Juego {
         return turno;
     }
     public String getTurnoActual() {
-        String letra = "O"; // Valor por defecto
+        String letra = "O"; 
 
         if (this.turno == 1) {
             letra = "X";
