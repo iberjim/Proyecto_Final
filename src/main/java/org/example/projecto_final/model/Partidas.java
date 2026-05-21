@@ -72,7 +72,7 @@ public Partidas(int id_partida, int dia, int mes, int ano) {
         if (this == o) return true;
         if (!(o instanceof Usuario)) return false;
         Partidas partidas = (Partidas) o;
-        return id_partida == partidas.getId_partida(); // o el campo identificador único
+        return id_partida == partidas.getId_partida();
     }
 
 }
