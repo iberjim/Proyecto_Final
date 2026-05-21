@@ -2,7 +2,7 @@ package org.example.projecto_final.controlador;
 
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
-import javafx.scene.control.Button;      // Para tus botones btnIA y btnDuo
+import javafx.scene.control.Button;      
 import  org.example.projecto_final.utils.Utils;
 
 public class MenuController {
