@@ -29,10 +29,8 @@ public class RankingController {
         colDerrotas.setCellValueFactory(new PropertyValueFactory<>("derrotas"));
         colEmpates.setCellValueFactory(new PropertyValueFactory<>("empates"));
 
-        // 2. Tu código para cargar los datos (se queda igual)
         tablaRanking.setItems(rankingDAO.obtenerTopRanking());
 
-        // 3. Tu código del mensaje personalizado (se queda igual)
         if (Usuario.usuarioSesion != null) {
             String misEstadisticas = "Buscando tus datos en el ranking...";
             for (Ranking fila : tablaRanking.getItems()) {
@@ -50,9 +48,7 @@ public class RankingController {
 
     @FXML
         void VolverClick(javafx.event.ActionEvent event) {
-            // En lugar de stage.close(), usamos tu Utils para regresar al menú principal
             System.out.println("Volviendo al menú principal...");
             org.example.projecto_final.utils.Utils.cambiarPantalla(event, "/org/example/projecto_final/vistas/hello-view.fxml");
-            // ⚠️ Revisa si tu fxml del menú se llama exactamente 'Menu.fxml' o 'MenuPrincipal.fxml' y cámbialo ahí.
         }
     }

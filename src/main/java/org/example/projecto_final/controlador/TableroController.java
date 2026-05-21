@@ -139,6 +139,11 @@ public class TableroController {
             }
         }
     }
+    @FXML
+    void volverAlMenuClick(javafx.event.ActionEvent event) {
+        System.out.println("Partida interrumpida. Volviendo al menú principal...");
+        org.example.projecto_final.utils.Utils.cambiarPantalla(event, "/org/example/projecto_final/vistas/hello-view.fxml");
+    }
 
     private void bloquearTablero() {
         for (Button btn : tableroBotones) {

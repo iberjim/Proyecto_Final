@@ -11,7 +11,6 @@ public class Main extends Application {
     @Override
     public void start(Stage stage) throws IOException {
         // AQUÍ CARGAMOS El Menú
-        // Revisa que la ruta coincida con donde esta el archivo fxml del menú
         FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("/org/example/projecto_final/vistas/hello-view.fxml"));
 
         Scene scene = new Scene(fxmlLoader.load());

@@ -35,8 +35,6 @@ public class LoginController {
             Usuario usuarioLogueado = UsuarioDAO.login(email, pass);
 
             if (usuarioLogueado != null) {
-                // Aquí podrías guardar el objeto en una sesión global si la usas
-                // Usuario.usuarioSesion = usuarioLogueado;
 
                 System.out.println("✅ Login correcto. Bienvenido, " + usuarioLogueado.getNombre());
 

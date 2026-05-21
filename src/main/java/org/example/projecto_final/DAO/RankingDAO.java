@@ -55,12 +55,10 @@ public class RankingDAO {
     }
 
     /**
-     * 🆕 NUEVO MÉTODO: Obtiene las filas del Top 5 de jugadores desde la base de datos
+     * MÉTODO: Obtiene las filas del Top 5 de jugadores desde la base de datos
      */
     public ObservableList<Ranking> obtenerTopRanking() {
         ObservableList<Ranking> listaRanking = FXCollections.observableArrayList();
-
-        // Asegúrate de que las columnas coincidan con tu base de datos actual
         String sql = "SELECT u.nombre AS nombre_usuario, r.victorias, r.derrotas, r.empates " +
                 "FROM ranking r " +
                 "JOIN usuario u ON r.id_usuario = u.id_usuario " +
