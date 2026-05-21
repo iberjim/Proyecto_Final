@@ -7,7 +7,7 @@ module org.example.projecto_final {
     opens org.example.projecto_final to javafx.fxml;
     opens org.example.projecto_final.controlador to javafx.fxml;
 
-    // 🔑 EL CAMBIO: Abrimos el modelo también a javafx.base para que funcione PropertyValueFactory
+
     opens org.example.projecto_final.model to javafx.fxml, javafx.base;
 
     opens org.example.projecto_final.dataaccess to jakarta.xml.bind;
