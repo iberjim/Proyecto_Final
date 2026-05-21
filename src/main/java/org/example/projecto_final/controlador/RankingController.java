@@ -13,7 +13,7 @@ public class RankingController {
 
     @FXML private Label lblMisDatos;
 
-    // La tabla se configura con tu clase 'Ranking'
+    // La tabla se configura con la clase Ranking
     @FXML private TableView<Ranking> tablaRanking;
     @FXML private TableColumn<Ranking, String> colNombre;
     @FXML private TableColumn<Ranking, Integer> colVictorias;
