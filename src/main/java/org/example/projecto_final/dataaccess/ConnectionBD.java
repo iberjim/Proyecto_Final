@@ -20,10 +20,11 @@ import java.sql.SQLException;
         }
 
         public void connect() throws SQLException {
-            try{
+            try {
                 con = DriverManager.getConnection(properties.getURL(), properties.getUser(), properties.getPassword());
-            }catch(SQLException e){
-                con=null;
+            } catch (SQLException e) {
+                con = null;
+                e.printStackTrace();
                 throw e;
             }
         }
@@ -39,13 +40,23 @@ import java.sql.SQLException;
         //3. metodo publico que me devuelve la instancia ya creada, si la primera vez la crea
 
         public static ConnectionBD getInstance() {
-            if(_instance==null){
+            if (_instance == null) {
                 _instance = new ConnectionBD();
             }
             return _instance;
         }
 
         public Connection getConnection() {
+            try {
+                // Si la conexión es nula o se ha cerrado por llevar tiempo inactiva, la creamos
+                if (con == null || con.isClosed()) {
+                    System.out.println("Conexión nula o cerrada. Conectando a la base de datos...");
+                    connect();
+                }
+            } catch (SQLException e) {
+                System.out.println("Error crítico al intentar conectar automáticamente desde getConnection():");
+                e.printStackTrace();
+            }
             return con;
         }
-}
+    }

@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.text.*?>
+
+<VBox alignment="CENTER" spacing="15.0" prefHeight="400.0" prefWidth="350.0" style="-fx-padding: 30; -fx-background-color: #ffffff;" xmlns="http://javafx.com/javafx/17" xmlns:fx="http://fxml.com/1" fx:controller="org.example.projecto_final.controlador.LoginController">
+    <children>
+
+        <Label text="🔑 INICIAR SESIÓN" textFill="#2d3748">
+            <font>
+                <Font name="System Bold" size="22.0" />
+            </font>
+        </Label>
+
+        <Separator prefWidth="200.0" />
+
+        <VBox spacing="5.0">
+            <children>
+                <Label text="Correo Electrónico:" textFill="#4a5568" />
+                <TextField fx:id="txtEmail" promptText="ejemplo@correo.com" style="-fx-padding: 8;" />
+            </children>
+        </VBox>
+
+        <VBox spacing="5.0">
+            <children>
+                <Label text="Contraseña:" textFill="#4a5568" />
+                <PasswordField fx:id="txtPassword" promptText="Tu contraseña" style="-fx-padding: 8;" />
+            </children>
+        </VBox>
+
+        <Button fx:id="btnLogin" mnemonicParsing="false" onAction="#IniciarSesionClick" prefWidth="200.0" text="Entrar a Jugar" style="-fx-background-color: #2b6cb0; -fx-text-fill: white; -fx-font-weight: bold; -fx-padding: 10; -fx-cursor: hand;" />
+
+        <Hyperlink fx:id="linkRegistro" onAction="#IrARegistroClick" text="¿No tienes cuenta? Regístrate aquí" textFill="#3182ce" />
+
+    </children>
+</VBox>

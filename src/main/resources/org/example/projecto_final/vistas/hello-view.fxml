@@ -9,12 +9,17 @@
     <padding>
         <Insets bottom="20.0" left="20.0" right="20.0" top="20.0" />
     </padding>
-   <Button fx:id="btnIA" mnemonicParsing="false" onAction="#ElegirModo" prefHeight="85.0" prefWidth="122.0" text="1 VS IA" textFill="RED">
+   <Button fx:id="btnRanking" mnemonicParsing="false" onAction="#ElegirModo" prefHeight="74.0" prefWidth="117.0" text="RANKING" textFill="#00ff1a">
       <font>
-         <Font name="System Italic" size="23.0" />
-      </font></Button>
+         <Font name="System Bold Italic" size="18.0" />
+      </font>
+   </Button>
    <Button fx:id="btnDUO" mnemonicParsing="false" onAction="#ElegirModo" prefHeight="89.0" prefWidth="115.0" text="1 VS 1">
       <font>
          <Font name="Franklin Gothic Medium Italic" size="23.0" />
+      </font></Button>
+   <Button fx:id="btnIA" mnemonicParsing="false" onAction="#ElegirModo" prefHeight="85.0" prefWidth="122.0" text="1 VS IA" textFill="RED">
+      <font>
+         <Font name="System Italic" size="23.0" />
       </font></Button>
 </VBox>

@@ -41,8 +41,8 @@ public class RegistroController {
             try{
                 Usuario usuario = new Usuario(nombre, email, pass);
                 if (UsuarioDAO.insert(usuario)) {
-                    Utils.mostrarDialogo("Registro Éxitoso","¡Bienvenido!","El usuario se ha guardado correctamente en la base de datos.",Alert.AlertType.INFORMATION);
-                    Utils.cambiarPantalla(event,"/org/example/projecto_final/vistas/EleccionDificultad.fxml");
+                    Utils.mostrarDialogo("Registro Éxitoso","¡Bienvenido!","El usuario se ha guardado correctamente en la base de datos.Inicia sesión ahora.",Alert.AlertType.INFORMATION);
+                    Utils.cambiarPantalla(event,"/org/example/projecto_final/vistas/Login.fxml");
                 }else {
                     Utils.mostrarDialogo("Erro de Registro","No se pudo guardar","El email ya está registrado en la base de datos.",Alert.AlertType.ERROR);
                 }

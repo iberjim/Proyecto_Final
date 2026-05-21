@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.text.*?>
+
+<VBox alignment="CENTER" spacing="20.0" prefHeight="450.0" prefWidth="500.0" style="-fx-padding: 25; -fx-background-color: #f7fafc;" xmlns="http://javafx.com/javafx/17" xmlns:fx="http://fxml.com/1" fx:controller="org.example.projecto_final.controlador.RankingController">
+    <children>
+
+        <Label text="🏆 TOP 5 JUGADORES 🏆" textFill="#2d3748">
+            <font>
+                <Font name="System Bold" size="24.0" />
+            </font>
+        </Label>
+
+        <Label fx:id="lblMisDatos" text="Cargando estadísticas..." textFill="#4a5568">
+            <font>
+                <Font name="System Italic" size="14.0" />
+            </font>
+        </Label>
+
+        <TableView fx:id="tablaRanking" prefHeight="250.0" prefWidth="450.0">
+            <columns>
+                <TableColumn fx:id="colNombre" prefWidth="180.0" text="Jugador" />
+                <TableColumn fx:id="colVictorias" prefWidth="90.0" text="Victorias" />
+                <TableColumn fx:id="colDerrotas" prefWidth="90.0" text="Derrotas" />
+                <TableColumn fx:id="colEmpates" prefWidth="90.0" text="Empates" />
+            </columns>
+        </TableView>
+
+        <Button fx:id="btnVolver" mnemonicParsing="false" onAction="#VolverClick" prefWidth="150.0" text="Volver al Menú" style="-fx-background-color: #3182ce; -fx-text-fill: white; -fx-font-weight: bold; -fx-padding: 8;" />
+
+    </children>
+</VBox>

@@ -56,4 +56,6 @@ public class Utils {
         alert.setContentText(mensaje);
         alert.showAndWait();
     }
+    // 🌍 VARIABLE GLOBAL: Guarda si la partida actual es contra la máquina o no
+    public static boolean modoIA = true;
 }

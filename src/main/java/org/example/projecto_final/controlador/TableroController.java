@@ -8,6 +8,7 @@ import javafx.scene.layout.GridPane;
 import org.example.projecto_final.model.Juego;
 import org.example.projecto_final.model.Usuario;
 import org.example.projecto_final.model.InteligenciaArtificial;
+import org.example.projecto_final.utils.Utils;
 
 import static org.example.projecto_final.utils.Utils.mostrarAlerta;
 
@@ -31,7 +32,7 @@ public class TableroController {
         partida = new Juego();
         ia = new InteligenciaArtificial();
         tableroBotones = new Button[]{btn00, btn01, btn02, btn10, btn11, btn12, btn20, btn21, btn22};
-
+        this.contraIA = Utils.modoIA;
         actualizarTextoTurno();
     }
 
