@@ -79,14 +79,14 @@ public class RankingDAO {
                 // Chivato en consola para comprobar si los datos se leen bien
                 System.out.println("[DAO] Fila detectada -> Usuario: " + nom + " | V: " + vic + " | D: " + der + " | E: " + emp);
 
-                // Pasamos los datos al constructor de tu clase Ranking
+                // Pasamos los datos al constructor de la clase Ranking
                 listaRanking.add(new Ranking(nom, vic, der, emp));
             }
 
             System.out.println("[DAO] Total filas cargadas para enviar a la tabla: " + listaRanking.size());
 
         } catch (SQLException e) {
-            System.out.println("❌ Error crítico al obtener el ranking de la base de datos:");
+            System.out.println("Error crítico al obtener el ranking de la base de datos:");
             e.printStackTrace();
         }
 

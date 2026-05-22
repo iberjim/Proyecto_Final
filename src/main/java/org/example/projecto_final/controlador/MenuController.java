@@ -16,6 +16,7 @@ public class MenuController {
     @FXML
     private Button btnRanking;
 
+    //Metodo del menu principal para elegir una opcion.
     @FXML
     void ElegirModo(ActionEvent event) {
         if (event.getSource() == btnIA) {

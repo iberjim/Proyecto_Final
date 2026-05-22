@@ -20,6 +20,7 @@ public class LoginController {
     @FXML
     private PasswordField txtPassword;
 
+    //Metodo para iniciar sesion mediante los campos y la base de datos.
     @FXML
     void IniciarSesionClick(ActionEvent event) {
         String email = txtEmail.getText().trim();
@@ -48,6 +49,7 @@ public class LoginController {
             Utils.mostrarDialogo("Error técnico", "Fallo de conexión", "No se pudo conectar con la base de datos.", Alert.AlertType.ERROR);
         }
     }
+    //boton de crear una cuenta en la vista de iniciar sesion.
 
     @FXML
     void IrARegistroClick(ActionEvent event) {

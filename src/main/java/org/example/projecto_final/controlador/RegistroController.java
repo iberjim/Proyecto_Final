@@ -27,7 +27,12 @@ public class RegistroController {
     @FXML
     private TextField txtPassword;
 
-
+    /**
+     * Se ejecuta al hacer clic en el botón de registrar usuario.
+     * Valida los campos del formulario, crea un nuevo objeto Usuario e intenta
+     * guardarlo en la base de datos a través del DAO, redirigiendo al Login si tiene éxito.
+     * @param event Objeto que contiene la información del clic en el botón.
+     */
     @FXML
     void RegistrarUsuario(ActionEvent event) {
         String nombre = txtNombre.getText();

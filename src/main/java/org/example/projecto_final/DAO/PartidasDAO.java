@@ -69,7 +69,7 @@ public class PartidasDAO {
 
         return partidas;
     }
-    public static boolean updateLibro(Partidas partidaNueva) throws SQLException {
+    public static boolean updatePartida(Partidas partidaNueva) throws SQLException {
         if (!isPartidaValida(partidaNueva)) {
             return false;
         }
@@ -85,7 +85,7 @@ public class PartidasDAO {
             return true;
         }
 
-        }public static boolean deleteLibroById(int idpartida) throws SQLException {
+        }public static boolean deletePartidaById(int idpartida) throws SQLException {
         if (findById(idpartida) == null) {
             return false;
         }
@@ -120,12 +120,27 @@ public class PartidasDAO {
         }
         return partidas;
     }
-
+    /**
+     * Valida si un objeto Partidas es estructuralmente correcto y seguro de usar.
+     * Comprueba que el objeto no sea nulo, que tenga un identificador válido
+     * y que tenga un usuario asociado asignado.
+     *
+     * @param partida El objeto Partidas que se desea evaluar.
+     * @return true si la partida cumple con todos los requisitos de seguridad, false en caso contrario.
+     */
     private static boolean isPartidaValida(Partidas partida){
         return partida != null
                 && partida.getId_partida() > 0
                 && partida.getUsuario() != null;
     }
+    /**
+     * Método que transforma una fila de la base de datos en un objeto Java.
+     * Construye un objeto de la clase Partidas mapeando las columnas del ResultSet
+     * y recuperando el objeto Usuario asociado mediante su identificador.
+     * * @param rs El ResultSet de JDBC posicionado en la fila que se quiere mapear.
+     * @return Un objeto Partidas completamente construido con sus datos y su relación.
+     * @throws SQLException Si ocurre algún error al acceder a las columnas de la base de datos.
+     */
 
     private static Partidas createPartidaFromResultSet(ResultSet rs) throws SQLException {
         int id = rs.getInt("idPartida");

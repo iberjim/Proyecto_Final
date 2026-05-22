@@ -24,9 +24,15 @@ public class TableroController {
     @FXML private Button btn00, btn01, btn02, btn10, btn11, btn12, btn20, btn21, btn22;
     @FXML private Button btnReiniciar;
     @FXML private Label lblTurno;
-
+    //Array pa agrupa los 9 botones físicos del tablero.
     private Button[] tableroBotones;
 
+    /**
+     * Método de inicialización automática de JavaFX.
+     * Se ejecuta justo antes de mostrar la pantalla al usuario.
+     * Se encarga de instanciar la lógica, mapear los componentes visuales
+     * y configurar el modo de juego seleccionado (Humano o IA).
+     */
     @FXML
     public void initialize(){
         partida = new Juego();
@@ -35,7 +41,12 @@ public class TableroController {
         this.contraIA = Utils.modoIA;
         actualizarTextoTurno();
     }
-
+    /**
+     * Se ejecuta automáticamente cada vez que el usuario hace clic en una casilla del tablero.
+     * Obtiene la posición del botón pulsado, registra el movimiento en la lógica,
+     * actualiza la interfaz visual y decide si le toca jugar al Jugador 2 o a la IA.
+     * * @param event Objeto que contiene la información del clic.
+     */
     @FXML
     void CasillaClick(ActionEvent event) {
         Button btn = (Button) event.getSource();
@@ -68,11 +79,18 @@ public class TableroController {
             }
         }
     }
+    /**
+     * Gestiona el turno de la Inteligencia Artificial.
+     * Pide un movimiento a la IA, calcula su posición en el tablero visual,
+     * marca la casilla y cede el turno de vuelta al jugador humano si no ha terminado la partida.
+     */
 
     private void ejecutarTurnoIA() {
         int movimientoIA = ia.decidirMovimiento(partida.getTablero(), dificultadSeleccionada);
 
         if (movimientoIA != -1) {
+           //Convertimos el índice lineal (0-8) a coordenadas de matriz (3x3)
+            // Ejemplo: Si movimientoIA es 4 -> fila = 4 / 3 = 1 | col = 4 % 3 = 1 (Centro)
             int fila = movimientoIA / 3;
             int col = movimientoIA % 3;
 
@@ -93,7 +111,7 @@ public class TableroController {
     }
 
     /**
-     * Actualiza el Label superior dependiendo de quién le toque jugar
+     * Actualiza el Label de la vista del tablero dependiendo de quién le toque jugar.
      */
     private void actualizarTextoTurno() {
         if (partida.getTurno() == 1) {
@@ -107,7 +125,11 @@ public class TableroController {
             lblTurno.setText("Turno de: Jugador 2 (O)");
         }
     }
-
+    /**
+     * Comprueba si la partida ha finalizado por victoria o por empate.
+     * Si la partida termina, muestra un mensaje al usuario y congela el juego.
+     * * @return true si la partida ha terminado (fin del juego), false si se puede seguir jugando.
+     */
     private boolean comprobarEstadoPartida() {
         if (partida.comprobarSiGana()) {
             String ganadorVisual;
@@ -126,7 +148,7 @@ public class TableroController {
         }
         return false;
     }
-
+        // Boton para reincial el tablero y poder volver a jugar.
     @FXML
     void ReiniciarClick(ActionEvent event) {
         partida = new Juego();
@@ -139,12 +161,15 @@ public class TableroController {
             }
         }
     }
+    /*
+        Metodo para volver al menu con el btn en pantalla-
+     */
     @FXML
     void volverAlMenuClick(javafx.event.ActionEvent event) {
         System.out.println("Partida interrumpida. Volviendo al menú principal...");
         org.example.projecto_final.utils.Utils.cambiarPantalla(event, "/org/example/projecto_final/vistas/hello-view.fxml");
     }
-
+    // Metodo para que no se pueda sobre escribir las jugadas.
     private void bloquearTablero() {
         for (Button btn : tableroBotones) {
             if (btn != null) {
