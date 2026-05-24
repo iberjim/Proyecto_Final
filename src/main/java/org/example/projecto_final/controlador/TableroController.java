@@ -138,8 +138,7 @@ public class TableroController {
         if (partida.comprobarSiGana()) {
             String ganadorVisual = "Jugador 1 (X)";
 
-            // 1. INSTANCIACIÓN LOCAL DIRECTA PARA EVITAR EL NULLPOINTEREXCEPTION
-            // Asegúrate de que la ruta 'org.example.projecto_final.DAO.RankingDAO' coincide con tus carpetas
+
             org.example.projecto_final.DAO.RankingDAO daoInstancia = new org.example.projecto_final.DAO.RankingDAO();
 
             if (partida.getTurno() == 1) {

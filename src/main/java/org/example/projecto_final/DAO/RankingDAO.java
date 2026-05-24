@@ -47,7 +47,7 @@ public class RankingDAO {
                 if (filasAfectadas == 0) {
                     System.out.println("[DAO] No había registro previo para el usuario " + idUsuario + ". Creando fila inicial...");
 
-                    // Le pasamos id_modo = 1 (Asegúrate de tener al menos un modo metido en la tabla modo_juego)
+                    // Le pasamos id_modo = 1
                     String sqlInsert = "INSERT INTO ranking (id_usuario, id_modo, victorias, derrotas, empates, puntuaciones) VALUES (?, 1, 0, 0, 0, 0)";
 
                     try (PreparedStatement pstInsert = con.prepareStatement(sqlInsert)) {
