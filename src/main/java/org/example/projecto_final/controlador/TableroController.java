@@ -8,12 +8,14 @@ import javafx.scene.layout.GridPane;
 import org.example.projecto_final.model.Juego;
 import org.example.projecto_final.model.Usuario;
 import org.example.projecto_final.model.InteligenciaArtificial;
+import org.example.projecto_final.DAO.RankingDAO;
 import org.example.projecto_final.utils.Utils;
 
 import static org.example.projecto_final.utils.Utils.mostrarAlerta;
 
-public class TableroController {
 
+public class TableroController {
+    private RankingDAO rankingDAO;
     private Juego partida;
     private InteligenciaArtificial ia;
 
@@ -131,18 +133,47 @@ public class TableroController {
      * * @return true si la partida ha terminado (fin del juego), false si se puede seguir jugando.
      */
     private boolean comprobarEstadoPartida() {
+        System.out.println("[RASTREO] Entrando a comprobarEstadoPartida. ¿Gana alguien?: " + partida.comprobarSiGana() + " | ¿Tablero lleno?: " + partida.tableroLleno());
+
         if (partida.comprobarSiGana()) {
-            String ganadorVisual;
+            String ganadorVisual = "Jugador 1 (X)";
+
+            // 1. INSTANCIACIÓN LOCAL DIRECTA PARA EVITAR EL NULLPOINTEREXCEPTION
+            // Asegúrate de que la ruta 'org.example.projecto_final.DAO.RankingDAO' coincide con tus carpetas
+            org.example.projecto_final.DAO.RankingDAO daoInstancia = new org.example.projecto_final.DAO.RankingDAO();
+
             if (partida.getTurno() == 1) {
-                ganadorVisual = (Usuario.usuarioSesion != null) ? Usuario.usuarioSesion.getNombre() : "Jugador 1 (X)";
+                if (Usuario.usuarioSesion != null) {
+                    ganadorVisual = Usuario.usuarioSesion.getNombre();
+                    System.out.println("[JAVA] " + ganadorVisual + " ha ganado. Actualizando base de datos...");
+
+                    // Usamos la instancia local directa que acabamos de crear arriba
+                    daoInstancia.actualizarEstadisticas(Usuario.usuarioSesion.getId_usuario(), "victoria");
+                }
             } else {
                 ganadorVisual = contraIA ? "Inteligencia Artificial (O)" : "Jugador 2 (O)";
+
+                if (Usuario.usuarioSesion != null) {
+                    System.out.println("[JAVA] " + Usuario.usuarioSesion.getNombre() + " ha perdido. Actualizando base de datos...");
+
+                    // Usamos la instancia local directa que acabamos de crear arriba
+                    daoInstancia.actualizarEstadisticas(Usuario.usuarioSesion.getId_usuario(), "derrota");
+                }
             }
 
             mostrarAlerta("Ganador", "¡Ha ganado " + ganadorVisual + "!");
             bloquearTablero();
             return true;
+
         } else if (partida.tableroLleno()) {
+            if (Usuario.usuarioSesion != null) {
+                System.out.println("[JAVA] Partida en tablas. Registrando empate para: " + Usuario.usuarioSesion.getNombre());
+
+                // Instanciamos también para el empate
+                org.example.projecto_final.DAO.RankingDAO daoInstancia = new org.example.projecto_final.DAO.RankingDAO();
+                daoInstancia.actualizarEstadisticas(Usuario.usuarioSesion.getId_usuario(), "empate");
+            }
+
             mostrarAlerta("Empate", "¡Tablero lleno! Buen intento.");
             return true;
         }

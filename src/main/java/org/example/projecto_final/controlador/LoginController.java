@@ -37,6 +37,7 @@ public class LoginController {
 
             if (usuarioLogueado != null) {
 
+                Usuario.usuarioSesion = usuarioLogueado;
                 System.out.println("✅ Login correcto. Bienvenido, " + usuarioLogueado.getNombre());
 
                 // Redirigimos directamente a la pantalla de dificultad

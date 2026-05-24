@@ -2,7 +2,6 @@ package org.example.projecto_final.DAO;
 
 import org.example.projecto_final.dataaccess.ConnectionBD;
 import org.example.projecto_final.model.Ranking;
-import org.example.projecto_final.model.Usuario;
 
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
@@ -34,25 +33,44 @@ public class RankingDAO {
                 return;
         }
 
-        String sql = "UPDATE ranking SET " + columna + " = " + columna + " + 1 WHERE id_usuario = ?";
+        // 1. INTENTAMOS PRIMERO EL UPDATE (Para cuando el usuario ya tiene fila en el ranking)
+        String sqlUpdate = "UPDATE ranking SET " + columna + " = COALESCE(" + columna + ", 0) + 1 WHERE id_usuario = ?";
 
-        try (Connection con = ConnectionBD.getInstance().getConnection();
-             PreparedStatement pst = con.prepareStatement(sql)) {
+        try (Connection con = org.example.projecto_final.dataaccess.ConnectionBD.getInstance().getConnection()) {
+            System.out.println("Conectando a la base de datos para actualizar ranking...");
 
-            pst.setInt(1, idUsuario);
-            int filasAfectadas = pst.executeUpdate();
+            try (PreparedStatement pstUpdate = con.prepareStatement(sqlUpdate)) {
+                pstUpdate.setInt(1, idUsuario);
+                int filasAfectadas = pstUpdate.executeUpdate();
 
-            if (filasAfectadas > 0) {
-                System.out.println("[SQL] Ranking actualizado con éxito (" + resultado + ") para el ID de usuario: " + idUsuario);
-            } else {
-                System.out.println("[SQL] No se encontró ninguna fila en la tabla 'ranking' para el usuario: " + idUsuario);
+                // 2. SI NO EXISTE LA FILA (filasAfectadas == 0), SE HACE EL INSERT PASANDO EL MODO OBLIGATORIO
+                if (filasAfectadas == 0) {
+                    System.out.println("[DAO] No había registro previo para el usuario " + idUsuario + ". Creando fila inicial...");
+
+                    // Le pasamos id_modo = 1 (Asegúrate de tener al menos un modo metido en la tabla modo_juego)
+                    String sqlInsert = "INSERT INTO ranking (id_usuario, id_modo, victorias, derrotas, empates, puntuaciones) VALUES (?, 1, 0, 0, 0, 0)";
+
+                    try (PreparedStatement pstInsert = con.prepareStatement(sqlInsert)) {
+                        pstInsert.setInt(1, idUsuario);
+                        pstInsert.executeUpdate();
+
+                        // Una vez creada la fila limpia, ejecutamos de nuevo el UPDATE para que sume el resultado actual
+                        try (PreparedStatement pstRetryUpdate = con.prepareStatement(sqlUpdate)) {
+                            pstRetryUpdate.setInt(1, idUsuario);
+                            pstRetryUpdate.executeUpdate();
+                        }
+                    }
+                }
+
+                System.out.println("[SQL] ¡ÉXITO TOTAL! Ranking actualizado (" + resultado + ") para el usuario ID: " + idUsuario);
             }
 
         } catch (SQLException e) {
-            System.out.println("Error crítico en la base de datos al intentar actualizar el ranking:");
+            System.out.println("❌ Error crítico de claves o integridad en la base de datos:");
             e.printStackTrace();
         }
     }
+
 
     /**
      * MÉTODO: Obtiene las filas del Top 5 de jugadores desde la base de datos

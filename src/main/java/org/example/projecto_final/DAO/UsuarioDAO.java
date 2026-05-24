@@ -141,13 +141,17 @@ public static Usuario findById(int idUsuario) throws SQLException {
                     String emailBd = rs.getString("email");
                     String passwordBd = rs.getString("password");
 
+                    // Creamos el objeto con el constructor
                     usuario = new Usuario(idUsuario, nombre, emailBd, passwordBd);
+
+
+                    usuario.setId_usuario(idUsuario);
+
                 }
             }
         }
         return usuario; // Devuelve el usuario encontrado, o null si fallaron los datos
     }
-
 
 
 
