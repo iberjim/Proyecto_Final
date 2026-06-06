@@ -1,78 +1,60 @@
 package org.example.projecto_final.model;
 
+import java.sql.Date;
+import java.sql.Time;
+
 public class Partidas {
+    private int idPartida;
+    private Date fecha;
+    private Time hora;
+    private int puntuacion;
+
+
     private Usuario usuario;
-private int id_partida;
-private int dia;
-private int mes;
-private int ano;
+    private int idModo;
 
-public enum estado{
-    activo,
-    finalizado;
-}
-    public enum modo{
-    FACIL,
-        MEDIO,
-        DIFICIL,
-        LOCO,
-        UNOVSUNO
-    }
-public Partidas(int id_partida, int dia, int mes, int ano) {
-    this.id_partida = id_partida;
-    this.dia = dia;
-    this.mes = mes;
-    this.ano = ano;
-}
-    public Partidas(int id_partida, int dia, int mes, int ano, Usuario usuario) {
-        this.id_partida = id_partida;
+    // 1. Constructor completo
+    public Partidas(int idPartida, Date fecha, Time hora, int puntuacion, Usuario usuario, int idModo) {
+        this.idPartida = idPartida;
+        this.fecha = fecha;
+        this.hora = hora;
+        this.puntuacion = puntuacion;
         this.usuario = usuario;
-        this.dia = dia;
-        this.mes = mes;
-        this.ano = ano;
+        this.idModo = idModo;
     }
 
-
-    public int getId_partida() {
-        return id_partida;
+    // 2. Constructor para guardar una partida nueva
+    public Partidas(Date fecha, Time hora, int puntuacion, Usuario usuario, int idModo) {
+        this.fecha = fecha;
+        this.hora = hora;
+        this.puntuacion = puntuacion;
+        this.usuario = usuario;
+        this.idModo = idModo;
     }
 
-    public void setId_partida(int id_partida) {
-        this.id_partida = id_partida;
-    }
+    // --- GETTERS Y SETTERS ---
 
-    public int getDia() {
-        return dia;
-    }
+    public int getIdPartida() { return idPartida; }
+    public void setIdPartida(int idPartida) { this.idPartida = idPartida; }
 
-    public void setDia(int dia) {
-        this.dia = dia;
-    }
+    public Date getFecha() { return fecha; }
+    public void setFecha(Date fecha) { this.fecha = fecha; }
 
-    public int getMes() {
-        return mes;
-    }
+    public Time getHora() { return hora; }
+    public void setHora(Time hora) { this.hora = hora; }
 
-    public void setMes(int mes) {
-        this.mes = mes;
-    }
+    public int getPuntuacion() { return puntuacion; }
+    public void setPuntuacion(int puntuacion) { this.puntuacion = puntuacion; }
 
-    public int getAno() {
-        return ano;
-    }
+    public Usuario getUsuario() { return usuario; }
+    public void setUsuario(Usuario usuario) { this.usuario = usuario; }
 
-    public void setAno(int ano) {
-        this.ano = ano;
-    }
-    public Usuario getUsuario() {return usuario;}
-    public void setUsuario(Usuario usuario) {this.usuario = usuario;}
 
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (!(o instanceof Usuario)) return false;
-        Partidas partidas = (Partidas) o;
-        return id_partida == partidas.getId_partida();
-    }
+    public int getIdModo() { return idModo; }
+    public void setIdModo(int idModo) { this.idModo = idModo; }
 
+    // Si no tiene nombre el ganador se le pondra anonimo
+    public String getNombreJugador() {
+        return (usuario != null) ? usuario.getNombre() : "Anónimo";
+    }
 }

@@ -30,8 +30,6 @@ public class LoginController {
             Utils.mostrarDialogo("Campos vacíos", "Información incompleta", "Por favor, introduce tu correo y contraseña.", Alert.AlertType.WARNING);
             return;
         }
-
-        try {
             // Buscamos el usuario en la BD mediante las credenciales
             Usuario usuarioLogueado = UsuarioDAO.login(email, pass);
 
@@ -45,10 +43,6 @@ public class LoginController {
             } else {
                 Utils.mostrarDialogo("Error de acceso", "Credenciales incorrectas", "El email o la contraseña no coinciden.", Alert.AlertType.ERROR);
             }
-        } catch (SQLException e) {
-            e.printStackTrace();
-            Utils.mostrarDialogo("Error técnico", "Fallo de conexión", "No se pudo conectar con la base de datos.", Alert.AlertType.ERROR);
-        }
     }
     //boton de crear una cuenta en la vista de iniciar sesion.
 

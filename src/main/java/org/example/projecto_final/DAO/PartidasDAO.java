@@ -10,149 +10,141 @@ import java.util.List;
 
 public class PartidasDAO {
 
-    private static final String SQL_FIND_ALL = "SELECT * FROM partidas ORDER BY idPartidas";
-    private static final String SQL_FIND_BY_ID = "SELECT * FROM partidas WHERE idPartidas=?";
-    private static final String SQL_FIND_BY_ID_USUARIO = "SELECT * FROM partidas WHERE idUsuario=? ORDER BY idPartidas";
-    private static final String SQL_INSERT = "INSERT INTO partidas (idUsuario, idPartidas) VALUES (?, ?,?)";
-    private static final String SQL_UPDATE =  "UPDATE partidas SET idUsuario=? WHERE idPartidas=?";
-    private static final String SQL_DELETE = "DELETE FROM partidas WHERE idPartidas=?";
+    // 1. Constantes SQL
+    private static final String SQL_FIND_ALL = "SELECT * FROM partidas ORDER BY id_partida";
+    private static final String SQL_FIND_BY_ID = "SELECT * FROM partidas WHERE id_partida=?";
+    private static final String SQL_FIND_BY_ID_USUARIO = "SELECT * FROM partidas WHERE id_usuario=? ORDER BY id_partida";
+    private static final String SQL_INSERT = "INSERT INTO partidas (fecha, hora, puntuacion, id_usuario, id_modo) VALUES (?, ?, ?, ?, ?)";
+    private static final String SQL_UPDATE = "UPDATE partidas SET fecha=?, hora=?, puntuacion=?, id_usuario=?, id_modo=? WHERE id_partida=?";
+    private static final String SQL_DELETE = "DELETE FROM partidas WHERE id_partida=?";
 
     private PartidasDAO() {
-
+        // Constructor privado para patrón de métodos estáticos
     }
+
+    // LISTAR TODAS LAS PARTIDAS
     public static List<Partidas> findAll() {
         List<Partidas> partidas = new ArrayList<>();
+        Connection con = ConnectionBD.getInstance().getConnection();
 
-        try (Statement st = ConnectionBD.getInstance().getConnection().createStatement();
+        // Sacamos 'con' del try para proteger el Singleton
+        try (Statement st = con.createStatement();
              ResultSet rs = st.executeQuery(SQL_FIND_ALL)) {
 
             while (rs.next()) {
                 partidas.add(createPartidaFromResultSet(rs));
             }
-        } catch (SQLException e){
+        } catch (SQLException e) {
+            System.out.println("❌ Error en findAll de PartidasDAO:");
+            e.printStackTrace();
             throw new RuntimeException(e);
         }
         return partidas;
-
     }
-    public static Partidas findById(int idPartidas) throws SQLException {
-        Partidas partidas = null;
-        try (PreparedStatement ps = ConnectionBD.getInstance().getConnection().prepareStatement(SQL_FIND_BY_ID)) {
-            ps.setInt(1, idPartidas);
-            ResultSet rs = ps.executeQuery();
 
-            if (rs.next()) {
-                partidas = createPartidaFromResultSet(rs);
+    // BUSCAR PARTIDA POR ID
+    public static Partidas findById(int idPartida) throws SQLException {
+        Partidas partida = null;
+        Connection con = ConnectionBD.getInstance().getConnection();
+
+        try (PreparedStatement ps = con.prepareStatement(SQL_FIND_BY_ID)) {
+            ps.setInt(1, idPartida);
+            try (ResultSet rs = ps.executeQuery()) {
+                if (rs.next()) {
+                    partida = createPartidaFromResultSet(rs);
+                }
             }
         }
-
-        return partidas;
+        return partida;
     }
 
-    public static Partidas addPartidas(Partidas partidas, Usuario usuario) throws SQLException {
-        if (!isPartidaValida(partidas) || findById(partidas.getId_partida()) != null) {
-            return null;
-        }
-        try (PreparedStatement ps = ConnectionBD.getInstance().getConnection().prepareStatement(SQL_INSERT, Statement.RETURN_GENERATED_KEYS)) {
-            ps.setInt(1, partidas.getId_partida());
-            ps.setInt(2, usuario.getId_usuario());
-            ps.setInt(3, partidas.getDia());
-            ps.setInt(4, partidas.getMes());
-            ps.setInt(5, partidas.getAno());
+    // INSERTAR NUEVA PARTIDA (Se llamará automáticamente al terminar de jugar)
+    public static Partidas addPartidas(Partidas partida) throws SQLException {
+        if (partida == null) return null;
+
+        Connection con = ConnectionBD.getInstance().getConnection();
+        // Usamos RETURN_GENERATED_KEYS para que MySQL nos devuelva el id_partida auto-incremental
+        try (PreparedStatement ps = con.prepareStatement(SQL_INSERT, Statement.RETURN_GENERATED_KEYS)) {
+            ps.setDate(1, partida.getFecha());
+            ps.setTime(2, partida.getHora());
+            ps.setInt(3, partida.getPuntuacion());
+            ps.setInt(4, partida.getUsuario().getId_usuario());
+            ps.setInt(5, partida.getIdModo());
+
             ps.executeUpdate();
 
-            ResultSet generatedKeys = ps.getGeneratedKeys();
-            if (generatedKeys.next()) {
-                partidas.setId_partida(generatedKeys.getInt(1));
+            // Recuperamos el ID que le ha asignado la base de datos
+            try (ResultSet generatedKeys = ps.getGeneratedKeys()) {
+                if (generatedKeys.next()) {
+                    partida.setIdPartida(generatedKeys.getInt(1));
+                }
             }
         }
-
-        return partidas;
+        return partida;
     }
+
+    // ACTUALIZAR PARTIDA
     public static boolean updatePartida(Partidas partidaNueva) throws SQLException {
-        if (!isPartidaValida(partidaNueva)) {
+        if (partidaNueva == null || findById(partidaNueva.getIdPartida()) == null) {
             return false;
         }
 
-        Partidas partidaActual = findById(partidaNueva.getId_partida());
-        if (partidaActual == null) {
-            return false;
-        }
-        try (PreparedStatement ps = ConnectionBD.getInstance().getConnection().prepareStatement(SQL_UPDATE)) {
-            ps.setInt(1, partidaNueva.getId_partida());
-            ps.setInt(3, partidaNueva.getUsuario().getId_usuario());
-            ps.executeUpdate();
-            return true;
-        }
+        Connection con = ConnectionBD.getInstance().getConnection();
+        try (PreparedStatement ps = con.prepareStatement(SQL_UPDATE)) {
+            ps.setDate(1, partidaNueva.getFecha());
+            ps.setTime(2, partidaNueva.getHora());
+            ps.setInt(3, partidaNueva.getPuntuacion());
+            ps.setInt(4, partidaNueva.getUsuario().getId_usuario());
+            ps.setInt(5, partidaNueva.getIdModo());
+            ps.setInt(6, partidaNueva.getIdPartida());
 
-        }public static boolean deletePartidaById(int idpartida) throws SQLException {
-        if (findById(idpartida) == null) {
-            return false;
-        }
-
-        try (PreparedStatement ps = ConnectionBD.getInstance().getConnection().prepareStatement(SQL_DELETE)) {
-            ps.setInt(1,idpartida );
-            ps.executeUpdate();
-            return true;
+            return ps.executeUpdate() > 0;
         }
     }
 
+    // ELIMINAR PARTIDA BY ID
+    public static boolean deletePartidaById(int idPartida) throws SQLException {
+        if (findById(idPartida) == null) {
+            return false;
+        }
 
-    /**
-     * Método que devuelve una lista con todas las partidas de un usuario especifico.
-     */
-    public static List<Partidas> findByIdUsuario(int idusuario) throws SQLException {
-        ArrayList<Partidas> partidas = new ArrayList<>();
+        Connection con = ConnectionBD.getInstance().getConnection();
+        try (PreparedStatement ps = con.prepareStatement(SQL_DELETE)) {
+            ps.setInt(1, idPartida);
+            return ps.executeUpdate() > 0;
+        }
+    }
 
-        try (PreparedStatement st = ConnectionBD.getInstance().getConnection().prepareStatement(SQL_FIND_BY_ID_USUARIO)) {
-            st.setInt(1, idusuario);
-            ResultSet rs = st.executeQuery();
+    // BUSCAR PARTIDAS DE UN USUARIO ESPECÍFICO
+    public static List<Partidas> findByIdUsuario(int idUsuario) throws SQLException {
+        List<Partidas> partidas = new ArrayList<>();
+        Connection con = ConnectionBD.getInstance().getConnection();
 
-            while (rs.next()) {
-                int id = rs.getInt("idPartida");
-                int dia = rs.getInt("dia");
-                int mes = rs.getInt("mes");
-                int anio = rs.getInt("año");
-                Usuario usuario = UsuarioDAO.findById(rs.getInt("idUsuario"));
-                Partidas partida = new Partidas(id,dia,mes,anio, usuario);
-                partidas.add(partida);
+        try (PreparedStatement ps = con.prepareStatement(SQL_FIND_BY_ID_USUARIO)) {
+            ps.setInt(1, idUsuario);
+            try (ResultSet rs = ps.executeQuery()) {
+                while (rs.next()) {
+                    partidas.add(createPartidaFromResultSet(rs));
+                }
             }
         }
         return partidas;
     }
-    /**
-     * Valida si un objeto Partidas es estructuralmente correcto y seguro de usar.
-     * Comprueba que el objeto no sea nulo, que tenga un identificador válido
-     * y que tenga un usuario asociado asignado.
-     *
-     * @param partida El objeto Partidas que se desea evaluar.
-     * @return true si la partida cumple con todos los requisitos de seguridad, false en caso contrario.
-     */
-    private static boolean isPartidaValida(Partidas partida){
-        return partida != null
-                && partida.getId_partida() > 0
-                && partida.getUsuario() != null;
-    }
-    /**
-     * Método que transforma una fila de la base de datos en un objeto Java.
-     * Construye un objeto de la clase Partidas mapeando las columnas del ResultSet
-     * y recuperando el objeto Usuario asociado mediante su identificador.
-     * * @param rs El ResultSet de JDBC posicionado en la fila que se quiere mapear.
-     * @return Un objeto Partidas completamente construido con sus datos y su relación.
-     * @throws SQLException Si ocurre algún error al acceder a las columnas de la base de datos.
-     */
 
+    // MÉTODO: Transforma la fila de la BD en Objeto Java
     private static Partidas createPartidaFromResultSet(ResultSet rs) throws SQLException {
-        int id = rs.getInt("idPartida");
-        int dia = rs.getInt("dia");
-        int mes  = rs.getInt("mes");
-        int anio = rs.getInt("anio");
-        Usuario usuario = UsuarioDAO.findById(rs.getInt("idUsuario"));
-        return new Partidas(id, dia, mes, anio, usuario);
+        int id = rs.getInt("id_partida");
+        Date fecha = rs.getDate("fecha");
+        Time hora = rs.getTime("hora");
+        int puntuacion = rs.getInt("puntuacion");
+        int idModo = rs.getInt("id_modo");
+
+        // Buscamos el objeto Usuario real usando su id_usuario de la base de datos
+        // Usando findById de la clase UsuarioDAO.
+        Usuario usuario = UsuarioDAO.findById(rs.getInt("id_usuario"));
+        // Creamos el objeto Partidas
+        return new Partidas(id, fecha, hora, puntuacion, usuario, idModo);
+
+
     }
-
-
-
-
-
-    }
+}

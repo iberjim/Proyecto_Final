@@ -15,6 +15,8 @@ public class MenuController {
 
     @FXML
     private Button btnRanking;
+    @FXML
+    private Button btnAdmin;
 
     //Metodo del menu principal para elegir una opcion.
     @FXML
@@ -27,6 +29,10 @@ public class MenuController {
             Utils.modoIA = false;
             System.out.println("Has elegido Persona vs Persona");
             Utils.cambiarPantalla(event, "/org/example/projecto_final/vistas/Tablero.fxml");
+        }else if (event.getSource() == btnAdmin) {
+            System.out.println("Entrando en ventana de administrador");
+            Utils.cambiarPantalla(event, "/org/example/projecto_final/vistas/Admin.fxml");
+
         }else {
             System.out.println("Abriendo la pantalla de estadísticas...");
             Utils.cambiarPantalla(event, "/org/example/projecto_final/vistas/Ranking.fxml");

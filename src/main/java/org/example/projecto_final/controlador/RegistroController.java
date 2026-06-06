@@ -40,19 +40,15 @@ public class RegistroController {
         String pass = txtPassword.getText();
 
         if (nombre.isEmpty() || email.isEmpty() || pass.isEmpty()) {
-            Utils.mostrarDialogo("Error","Campos Incompletos","Por favor, rellena todos los campos para poder continuar.", Alert.AlertType.ERROR);
-    } else {
-
-            try{
-                Usuario usuario = new Usuario(nombre, email, pass);
-                if (UsuarioDAO.insert(usuario)) {
-                    Utils.mostrarDialogo("Registro Éxitoso","¡Bienvenido!","El usuario se ha guardado correctamente en la base de datos.Inicia sesión ahora.",Alert.AlertType.INFORMATION);
-                    Utils.cambiarPantalla(event,"/org/example/projecto_final/vistas/Login.fxml");
-                }else {
-                    Utils.mostrarDialogo("Erro de Registro","No se pudo guardar","El email ya está registrado en la base de datos.",Alert.AlertType.ERROR);
-                }
-            }catch (SQLException e){
-                Utils.mostrarDialogo("Error","Error al registrar el usuario","No se ha podido establecer conexión con la base de datos",Alert.AlertType.ERROR);
+            Utils.mostrarDialogo("Error", "Campos Incompletos", "Por favor, rellena todos los campos para poder continuar.", Alert.AlertType.ERROR);
+        } else {
+            // 1. Creamos el objeto pasando un 0 en el ID porque la base de datos lo autoincrementará
+            Usuario usuario = new Usuario(0, nombre, email, pass);
+            if (UsuarioDAO.insert(usuario)) {
+                Utils.mostrarDialogo("Registro Exitoso", "¡Bienvenido!", "El usuario se ha guardado correctamente en la base de datos. Inicia sesión ahora.", Alert.AlertType.INFORMATION);
+                Utils.cambiarPantalla(event, "/org/example/projecto_final/vistas/Login.fxml");
+            } else {
+                Utils.mostrarDialogo("Error de Registro", "No se pudo guardar", "El email ya está registrado o hubo un problema con la base de datos.", Alert.AlertType.ERROR);
             }
         }
     }
