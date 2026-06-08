@@ -13,9 +13,9 @@ public class PartidasDAO {
     // 1. Constantes SQL
     private static final String SQL_FIND_ALL = "SELECT * FROM partidas ORDER BY id_partida";
     private static final String SQL_FIND_BY_ID = "SELECT * FROM partidas WHERE id_partida=?";
-    private static final String SQL_FIND_BY_ID_USUARIO = "SELECT * FROM partidas WHERE id_usuario=? ORDER BY id_partida";
-    private static final String SQL_INSERT = "INSERT INTO partidas (fecha, hora, puntuacion, id_usuario, id_modo) VALUES (?, ?, ?, ?, ?)";
-    private static final String SQL_UPDATE = "UPDATE partidas SET fecha=?, hora=?, puntuacion=?, id_usuario=?, id_modo=? WHERE id_partida=?";
+    private static final String SQL_FIND_BY_ID_USUARIO = "SELECT * FROM partidas WHERE idusuario=? ORDER BY id_partida";
+    private static final String SQL_INSERT = "INSERT INTO partidas (fecha, hora, puntuacion, idusuario, idmodo) VALUES (?, ?, ?, ?, ?)";
+    private static final String SQL_UPDATE = "UPDATE partidas SET fecha=?, hora=?, puntuacion=?, idusuario=?, idmodo=? WHERE id_partida=?";
     private static final String SQL_DELETE = "DELETE FROM partidas WHERE id_partida=?";
 
     private PartidasDAO() {
@@ -131,17 +131,38 @@ public class PartidasDAO {
         return partidas;
     }
 
+    public static List<String> getRankingConNombres() {
+        List<String> ranking = new ArrayList<>();
+        // Usamos un JOIN para traer el nombre del usuario junto con su puntuación
+        String sql = "SELECT u.nombre, p.puntuacion FROM partidas p " +
+                "JOIN usuario u ON p.idusuario = u.id_usuario " +
+                "ORDER BY p.puntuacion DESC LIMIT 10";
+
+        try (Connection con = DriverManager.getConnection("jdbc:mysql://localhost:3306/tu_bd", "user", "pass");
+             PreparedStatement ps = con.prepareStatement(sql);
+             ResultSet rs = ps.executeQuery()) {
+
+            while (rs.next()) {
+                String fila = rs.getString("nombre") + " - " + rs.getInt("puntuacion") + " pts";
+                ranking.add(fila);
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return ranking;
+    }
+
     // MÉTODO: Transforma la fila de la BD en Objeto Java
     private static Partidas createPartidaFromResultSet(ResultSet rs) throws SQLException {
         int id = rs.getInt("id_partida");
         Date fecha = rs.getDate("fecha");
         Time hora = rs.getTime("hora");
         int puntuacion = rs.getInt("puntuacion");
-        int idModo = rs.getInt("id_modo");
+        int idModo = rs.getInt("idmodo");
 
         // Buscamos el objeto Usuario real usando su id_usuario de la base de datos
         // Usando findById de la clase UsuarioDAO.
-        Usuario usuario = UsuarioDAO.findById(rs.getInt("id_usuario"));
+        Usuario usuario = UsuarioDAO.findById(rs.getInt("idusuario"));
         // Creamos el objeto Partidas
         return new Partidas(id, fecha, hora, puntuacion, usuario, idModo);
 

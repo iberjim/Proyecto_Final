@@ -17,19 +17,19 @@ public static String dificultadElegida;
     //Metodo para elegir la dificultad.
 @FXML
     void ElegirFacil(ActionEvent event) {
-    dificultadElegida = "FACIL";
+    dificultadElegida = "facil";
     irAlTablero(event);
 }
     //Metodo para elegir la dificultad.
 @FXML
     void ElegirMedio(ActionEvent event) {
-    dificultadElegida = "NORMAL";
+    dificultadElegida = "normal";
     irAlTablero(event);
 }
     //Metodo para elegir la dificultad.
 @FXML
     void ElegirDificil(ActionEvent event) {
-    dificultadElegida = "DIFICIL";
+    dificultadElegida = "dificil";
     irAlTablero(event);
 }
     //Metodo para pasar a la siguiente vista.

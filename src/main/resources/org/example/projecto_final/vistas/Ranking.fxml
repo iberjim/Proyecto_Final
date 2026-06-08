@@ -4,27 +4,48 @@
 <?import javafx.scene.layout.*?>
 <?import javafx.scene.text.*?>
 
-<VBox alignment="CENTER" spacing="20.0" prefHeight="450.0" prefWidth="500.0" style="-fx-padding: 25; -fx-background-color: #f7fafc;" xmlns="http://javafx.com/javafx/17" xmlns:fx="http://fxml.com/1" fx:controller="org.example.projecto_final.controlador.RankingController">
+<VBox alignment="CENTER" spacing="15.0" prefHeight="550.0" prefWidth="700.0" style="-fx-padding: 20; -fx-background-color: #f7fafc;" xmlns="http://javafx.com/javafx/17" xmlns:fx="http://fxml.com/1" fx:controller="org.example.projecto_final.controlador.RankingController">
     <children>
 
-        <Label text="🏆 TOP 5 JUGADORES 🏆" textFill="#2d3748">
+        <Label text="🏆 PANEL DE FILTROS Y RANKING 🏆" textFill="#2d3748">
             <font>
-                <Font name="System Bold" size="24.0" />
+                <Font name="System Bold" size="22.0" />
             </font>
         </Label>
 
-        <Label fx:id="lblMisDatos" text="Cargando estadísticas..." textFill="#4a5568">
+        <HBox alignment="CENTER" spacing="15.0" style="-fx-background-color: #edf2f7; -fx-padding: 10; -fx-background-radius: 5;">
+            <children>
+                <Label text="Fecha:" textFill="#4a5568" style="-fx-font-weight: bold;"/>
+                <DatePicker fx:id="dpFecha" prefWidth="130.0" promptText="Selecciona día"/>
+
+                <Label text="ID Usuario:" textFill="#4a5568" style="-fx-font-weight: bold;"/>
+                <TextField fx:id="txtIdUsuario" prefWidth="80.0" promptText="Ej: 5"/>
+            </children>
+        </HBox>
+
+        <HBox alignment="CENTER" spacing="10.0">
+            <children>
+                <Button fx:id="btnBuscarFecha" onAction="#BuscarPorFechaClick" text="📅 Buscar por Día" style="-fx-background-color: #4a5568; -fx-text-fill: white; -fx-font-weight: bold;"/>
+                <Button fx:id="btnBuscarUsuario" onAction="#BuscarPorUsuarioClick" text="👤 Buscar por Usuario" style="-fx-background-color: #4a5568; -fx-text-fill: white; -fx-font-weight: bold;"/>
+                <Button fx:id="btnBuscarAmbos" onAction="#BuscarPorAmbosClick" text="🔍 Combinar Ambos" style="-fx-background-color: #dd6b20; -fx-text-fill: white; -fx-font-weight: bold;"/>
+                <Button fx:id="btnRanking" onAction="#VerRankingClick" text="🏆 Ver Ranking" style="-fx-background-color: #38a169; -fx-text-fill: white; -fx-font-weight: bold;"/>
+            </children>
+        </HBox>
+
+        <Label fx:id="lblMisDatos" text="Usa los filtros superiores para explorar el historial de partidas." textFill="#4a5568">
             <font>
-                <Font name="System Italic" size="14.0" />
+                <Font name="System Italic" size="13.0" />
             </font>
         </Label>
 
-        <TableView fx:id="tablaRanking" prefHeight="250.0" prefWidth="450.0">
+        <TableView fx:id="tablaRanking" prefHeight="250.0" prefWidth="660.0">
             <columns>
-                <TableColumn fx:id="colNombre" prefWidth="180.0" text="Jugador" />
-                <TableColumn fx:id="colVictorias" prefWidth="90.0" text="Victorias" />
-                <TableColumn fx:id="colDerrotas" prefWidth="90.0" text="Derrotas" />
-                <TableColumn fx:id="colEmpates" prefWidth="90.0" text="Empates" />
+                <TableColumn fx:id="colIdPartida" prefWidth="90.0" text="ID Partida" />
+                <TableColumn fx:id="colFecha" prefWidth="110.0" text="Fecha" />
+                <TableColumn fx:id="colHora" prefWidth="90.0" text="Hora" />
+                <TableColumn fx:id="colPuntuacion" prefWidth="110.0" text="Puntuación" />
+                <TableColumn fx:id="colIdUsuario" prefWidth="110.0" text="ID Usuario" />
+                <TableColumn fx:id="colIdModo" prefWidth="110.0" text="ID Modo" />
             </columns>
         </TableView>
 

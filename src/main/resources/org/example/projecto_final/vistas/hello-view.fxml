@@ -39,7 +39,7 @@
          </font>
       </Button>
 
-      <Button fx:id="btnAdmin" mnemonicParsing="false" onAction="#ElegirModo" prefHeight="45.0" prefWidth="250.0" style="-fx-background-color: #757575; -fx-text-fill: white; -fx-background-radius: 10; -fx-cursor: hand;" text="⚙️  Modo Administrador">
+      <Button fx:id="btnAdmin" mnemonicParsing="false" onAction="#abrirPanelAdmin" prefHeight="45.0" prefWidth="250.0" style="-fx-background-color: #757575; -fx-text-fill: white; -fx-background-radius: 10; -fx-cursor: hand;" text="⚙️  Modo Administrador">
          <font>
             <Font name="System Bold" size="14.0" />
          </font>

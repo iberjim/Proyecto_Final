@@ -13,11 +13,6 @@ import org.example.projecto_final.model.Usuario;
 import org.example.projecto_final.utils.Utils;
 
 import javafx.event.ActionEvent;
-import javafx.fxml.FXMLLoader;
-import javafx.scene.Parent;
-import javafx.scene.Scene;
-import javafx.stage.Stage;
-import java.io.IOException;
 
 public class AdminController {
 
@@ -38,18 +33,21 @@ public class AdminController {
     private ObservableList<Usuario> listaObservable;
     private Usuario usuarioSeleccionado;
 
+    /**
+     * Inicializa la vista de gestión de usuarios. Configura el enlace entre las columnas
+     * de la tabla y los atributos del modelo Usuario, carga los datos iniciales y
+     * establece un 'listener' que detecta cuando un usuario es seleccionado en la tabla
+     * para rellenar automáticamente los campos de texto del formulario.
+     */
     @FXML
     public void initialize() {
-        // 1. Configurar las columnas de la tabla para que sepan qué dato mostrar del objeto Usuario
         colId.setCellValueFactory(new PropertyValueFactory<>("id_usuario"));
         colNombre.setCellValueFactory(new PropertyValueFactory<>("nombre"));
         colEmail.setCellValueFactory(new PropertyValueFactory<>("email"));
         colPassword.setCellValueFactory(new PropertyValueFactory<>("password"));
 
-        // 2. Cargar los datos desde la Base de Datos
         refrescarTabla();
 
-        // 3. Escuchar los clics de la tabla: cuando pinchen en una fila, rellenamos los campos
         tablaUsuarios.getSelectionModel().selectedItemProperty().addListener((obs, oldSelection, newSelection) -> {
             if (newSelection != null) {
                 usuarioSeleccionado = newSelection;
@@ -59,9 +57,12 @@ public class AdminController {
             }
         });
     }
-
+    /**
+     * Actualiza el contenido de la tabla de usuarios obteniendo la información
+     * más reciente desde la base de datos a través del DAO. Posteriormente,
+     * limpia los campos del formulario para preparar la interfaz para una nueva acción.
+     */
     private void refrescarTabla() {
-        // Llamamos al DAO que creamos antes para traernos todo de la BD
         listaObservable = FXCollections.observableArrayList(UsuarioDAO.findAll());
         tablaUsuarios.setItems(listaObservable);
         limpiarCampos();
@@ -74,7 +75,6 @@ public class AdminController {
         usuarioSeleccionado = null;
     }
 
-    // ACCIÓN: ACTUALIZAR (U del CRUD)
     @FXML
     public void ActualizarClick(ActionEvent event) {
         if (usuarioSeleccionado == null) {
@@ -82,44 +82,47 @@ public class AdminController {
             return;
         }
 
-        // Modificamos el objeto con los nuevos datos de los cuadros de texto
         usuarioSeleccionado.setNombre(txtNombre.getText());
         usuarioSeleccionado.setEmail(txtEmail.getText());
         usuarioSeleccionado.setPassword(txtPassword.getText());
 
-        // Le pedimos al DAO que lo guarde en la BD
         if (UsuarioDAO.update(usuarioSeleccionado)) {
             Utils.mostrarAlerta("Éxito", "Usuario actualizado correctamente en la base de datos.");
             refrescarTabla();
         }
     }
 
-    // ACCIÓN: ELIMINAR (D del CRUD)
     @FXML
-   public void EliminarClick(ActionEvent event) {
-        if (usuarioSeleccionado == null) {
-            Utils.mostrarAlerta("Atención", "Por favor, selecciona primero un usuario de la tabla.");
+    public void EliminarClick(ActionEvent event) {
+        // 1. Forzamos a JavaFX a decirnos qué fila real está marcada con el ratón ahora mismo
+        Usuario usuarioMarcado = tablaUsuarios.getSelectionModel().getSelectedItem();
+
+        if (usuarioMarcado == null) {
+            Utils.mostrarAlerta("Atención", "Por favor, selecciona primero un usuario de la tabla de la interfaz.");
             return;
         }
 
-        // Le pedimos al DAO que lo borre usando su ID
-        if (UsuarioDAO.delete(usuarioSeleccionado.getId_usuario())) {
-            Utils.mostrarAlerta("Éxito", "Usuario eliminado de la base de datos de forma permanente.");
-            refrescarTabla();
+        // RASTREO EN CONSOLA: Para verificar qué ID está leyendo Java realmente
+        System.out.println("[DEBUG ADMIN] Intentando borrar a: " + usuarioMarcado.getNombre() + " con ID: " + usuarioMarcado.getId_usuario());
+
+        // 2. Si el ID sigue saliendo 0, usamos una alternativa de seguridad o le pasamos el objeto
+        if (usuarioMarcado.getId_usuario() == 0) {
+            Utils.mostrarAlerta("Error de Mapeo", "El ID del usuario seleccionado es 0.");
+            return;
+        }
+
+        // 3. Llamamos al DAO con el ID verificado
+        if (UsuarioDAO.delete(usuarioMarcado.getId_usuario())) {
+            Utils.mostrarAlerta("Éxito", "Usuario y su historial eliminados correctamente de la base de datos.");
+            refrescarTabla(); // Recargamos la lista para que desaparezca visualmente
+        } else {
+            Utils.mostrarAlerta("Error", "No se pudo eliminar al usuario seleccionado.");
         }
     }
 
-    // ACCIÓN: VOLVER AL MENÚ
     @FXML
-   public void VolverClick(ActionEvent event) {
-        try {
-
-            Parent menu = FXMLLoader.load(getClass().getResource("/org/example/projecto_final/hello-view.fxml"));
-            Stage stage = (Stage) btnVolver.getScene().getWindow();
-            stage.setScene(new Scene(menu));
-            stage.show();
-        } catch (IOException e) {
-            Utils.mostrarAlerta("Error", "No se pudo regresar al menú principal.");
-        }
+    public void VolverClick(ActionEvent event) {
+        System.out.println("Saliendo del Panel de Administrador de forma segura...");
+        org.example.projecto_final.utils.Utils.cambiarPantalla(event, "/org/example/projecto_final/vistas/hello-view.fxml");
     }
 }

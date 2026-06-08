@@ -7,92 +7,78 @@ import javafx.scene.control.Label;
 import javafx.scene.layout.GridPane;
 import org.example.projecto_final.model.Juego;
 import org.example.projecto_final.model.Usuario;
+import org.example.projecto_final.model.Partidas; // Importamos el nuevo modelo
 import org.example.projecto_final.model.InteligenciaArtificial;
-import org.example.projecto_final.DAO.RankingDAO;
+import org.example.projecto_final.DAO.PartidasDAO; // Importamos el nuevo DAO
 import org.example.projecto_final.utils.Utils;
+
+import java.sql.Date;
+import java.sql.Time;
+import java.time.LocalDate;
+import java.time.LocalTime;
 
 import static org.example.projecto_final.utils.Utils.mostrarAlerta;
 
-
 public class TableroController {
-    private RankingDAO rankingDAO;
     private Juego partida;
     private InteligenciaArtificial ia;
 
+    //  CONTADOR DE MOVIMIENTOS: Para calcular la puntuación por eficiencia
+    private int movimientosJugador = 0;
+
     // CONTROL DE MODOS Y DIFICULTAD
-    private boolean contraIA = true; // Cambiar a 'false' si en el menú eligen 2 Jugadores
-    private String dificultadSeleccionada = "difícil"; // 'fácil', 'medio' o 'difícil'
+    private boolean contraIA = true;
+    private String dificultadSeleccionada = "difícil";
 
     @FXML private Button btn00, btn01, btn02, btn10, btn11, btn12, btn20, btn21, btn22;
     @FXML private Button btnReiniciar;
     @FXML private Label lblTurno;
-    //Array pa agrupa los 9 botones físicos del tablero.
+
     private Button[] tableroBotones;
 
-    /**
-     * Método de inicialización automática de JavaFX.
-     * Se ejecuta justo antes de mostrar la pantalla al usuario.
-     * Se encarga de instanciar la lógica, mapear los componentes visuales
-     * y configurar el modo de juego seleccionado (Humano o IA).
-     */
     @FXML
     public void initialize(){
         partida = new Juego();
         ia = new InteligenciaArtificial();
         tableroBotones = new Button[]{btn00, btn01, btn02, btn10, btn11, btn12, btn20, btn21, btn22};
+        this.dificultadSeleccionada = EleccionDificultadController.dificultadElegida;
         this.contraIA = Utils.modoIA;
+        this.movimientosJugador = 0; // Inicializamos a 0
         actualizarTextoTurno();
     }
-    /**
-     * Se ejecuta automáticamente cada vez que el usuario hace clic en una casilla del tablero.
-     * Obtiene la posición del botón pulsado, registra el movimiento en la lógica,
-     * actualiza la interfaz visual y decide si le toca jugar al Jugador 2 o a la IA.
-     * * @param event Objeto que contiene la información del clic.
-     */
+
     @FXML
     void CasillaClick(ActionEvent event) {
         Button btn = (Button) event.getSource();
         int fila = (GridPane.getRowIndex(btn) == null) ? 0 : GridPane.getRowIndex(btn);
         int col = (GridPane.getColumnIndex(btn) == null) ? 0 : GridPane.getColumnIndex(btn);
 
-        // Intentamos marcar la casilla en la lógica del juego
         if (partida.marcarCasilla(fila, col)) {
-            // Pintamos la ficha del jugador que tenga el turno actual (X o O)
+            //CADA CLIC VÁLIDO DEL JUGADOR SUMA UN MOVIMIENTO
+            movimientosJugador++;
+
             btn.setText(partida.getTurnoActual());
             btn.setDisable(true);
 
-            // Comprobamos si este movimiento ha terminado la partida
             if (comprobarEstadoPartida()) {
                 return;
             }
 
-            // Si la partida continúa, cambiamos de turno
             partida.cambiarTurno();
 
-            // RAMIFICACIÓN DE MODOS DE JUEGO:
             if (contraIA) {
-                // MODO CONTRA LA IA:
                 lblTurno.setText("Turno de la IA (O)...");
-                ejecutarTurnoIA(); // La IA mueve inmediatamente de forma automática
+                ejecutarTurnoIA();
             } else {
-                // MODO 2 JUGADORES (Humano contra Humano):
-                // No llamamos a la IA, simplemente cambiamos el texto de la pantalla para el siguiente jugador
                 actualizarTextoTurno();
             }
         }
     }
-    /**
-     * Gestiona el turno de la Inteligencia Artificial.
-     * Pide un movimiento a la IA, calcula su posición en el tablero visual,
-     * marca la casilla y cede el turno de vuelta al jugador humano si no ha terminado la partida.
-     */
 
     private void ejecutarTurnoIA() {
         int movimientoIA = ia.decidirMovimiento(partida.getTablero(), dificultadSeleccionada);
 
         if (movimientoIA != -1) {
-           //Convertimos el índice lineal (0-8) a coordenadas de matriz (3x3)
-            // Ejemplo: Si movimientoIA es 4 -> fila = 4 / 3 = 1 | col = 4 % 3 = 1 (Centro)
             int fila = movimientoIA / 3;
             int col = movimientoIA % 3;
 
@@ -105,16 +91,12 @@ public class TableroController {
                     return;
                 }
 
-                // Devuelve el turno al humano
                 partida.cambiarTurno();
                 actualizarTextoTurno();
             }
         }
     }
 
-    /**
-     * Actualiza el Label de la vista del tablero dependiendo de quién le toque jugar.
-     */
     private void actualizarTextoTurno() {
         if (partida.getTurno() == 1) {
             if (Usuario.usuarioSesion != null) {
@@ -123,65 +105,97 @@ public class TableroController {
                 lblTurno.setText("Turno de: Jugador 1 (X)");
             }
         } else {
-            // Si es turno de la 'O' y no es la IA, significa que juega el Jugador 2 humano
             lblTurno.setText("Turno de: Jugador 2 (O)");
         }
     }
+
     /**
-     * Comprueba si la partida ha finalizado por victoria o por empate.
-     * Si la partida termina, muestra un mensaje al usuario y congela el juego.
-     * * @return true si la partida ha terminado (fin del juego), false si se puede seguir jugando.
+     * Comprueba el estado de la partida y calcula/guarda los puntos en la base de datos.
      */
     private boolean comprobarEstadoPartida() {
-        System.out.println("[RASTREO] Entrando a comprobarEstadoPartida. ¿Gana alguien?: " + partida.comprobarSiGana() + " | ¿Tablero lleno?: " + partida.tableroLleno());
+        System.out.println("[RASTREO] ComprobarEstadoJuego. Movimientos: " + movimientosJugador);
 
         if (partida.comprobarSiGana()) {
             String ganadorVisual = "Jugador 1 (X)";
-
-
-            org.example.projecto_final.DAO.RankingDAO daoInstancia = new org.example.projecto_final.DAO.RankingDAO();
+            String resultadoParaHistorial = "PERDIDO"; // Por defecto, asumimos que se pierde (frente a IA o J2)
 
             if (partida.getTurno() == 1) {
+                // Ha ganado el Jugador 1 (el usuario en sesión)
+                resultadoParaHistorial = "GANADO";
                 if (Usuario.usuarioSesion != null) {
                     ganadorVisual = Usuario.usuarioSesion.getNombre();
-                    System.out.println("[JAVA] " + ganadorVisual + " ha ganado. Actualizando base de datos...");
-
-                    // Usamos la instancia local directa que acabamos de crear arriba
-                    daoInstancia.actualizarEstadisticas(Usuario.usuarioSesion.getId_usuario(), "victoria");
                 }
             } else {
                 ganadorVisual = contraIA ? "Inteligencia Artificial (O)" : "Jugador 2 (O)";
-
-                if (Usuario.usuarioSesion != null) {
-                    System.out.println("[JAVA] " + Usuario.usuarioSesion.getNombre() + " ha perdido. Actualizando base de datos...");
-
-                    // Usamos la instancia local directa que acabamos de crear arriba
-                    daoInstancia.actualizarEstadisticas(Usuario.usuarioSesion.getId_usuario(), "derrota");
-                }
             }
+
+            // GUARDADO EN LA BASE DE DATOS (Victorias y Derrotas)
+            guardarDatosPartida(resultadoParaHistorial);
 
             mostrarAlerta("Ganador", "¡Ha ganado " + ganadorVisual + "!");
             bloquearTablero();
             return true;
 
         } else if (partida.tableroLleno()) {
-            if (Usuario.usuarioSesion != null) {
-                System.out.println("[JAVA] Partida en tablas. Registrando empate para: " + Usuario.usuarioSesion.getNombre());
-
-                // Instanciamos también para el empate
-                org.example.projecto_final.DAO.RankingDAO daoInstancia = new org.example.projecto_final.DAO.RankingDAO();
-                daoInstancia.actualizarEstadisticas(Usuario.usuarioSesion.getId_usuario(), "empate");
-            }
+            // GUARDADO AUTOMÁTICO EN LA BASE DE DATOS (Empates)
+            guardarDatosPartida("EMPATE");
 
             mostrarAlerta("Empate", "¡Tablero lleno! Buen intento.");
             return true;
         }
         return false;
     }
-        // Boton para reincial el tablero y poder volver a jugar.
+
+    /**
+     * MÉTODO: Calcula la puntuación según eficiencia y la manda a la BD mediante la clase PartidasDAO
+     */
+    private void guardarDatosPartida(String resultado) {
+        if (Usuario.usuarioSesion != null) {
+            int puntosFinales = 0;
+
+            // Lógica de puntuación
+            if (resultado.equals("GANADO")) {
+                puntosFinales = 100 - (movimientosJugador * 10);
+                if (puntosFinales < 10) puntosFinales = 10; // Garantizamos un mínimo por ganar
+            } else if (resultado.equals("EMPATE")) {
+                puntosFinales = 20;
+            } else {
+                puntosFinales = 0; // 0 puntos si pierde contra la IA o el J2
+            }
+
+            System.out.println("[HISTORIAL] Registrando partida de " + Usuario.usuarioSesion.getNombre() +
+                    " (ID: " + Usuario.usuarioSesion.getId_usuario() + ") con " + puntosFinales + " puntos.");
+
+            try {
+                // Capturamos tiempos del sistema operativo
+                Date fechaSQL = Date.valueOf(LocalDate.now());
+                Time horaSQL = Time.valueOf(LocalTime.now());
+
+                // Identificamos el modo de juego (1 para IA, 2 para Dos Jugadores)
+                int idModoActual = contraIA ? 1 : 2;
+
+                // Añadimos un '0' al principio como ID provisional de la partida.
+                // Esto garantiza que Java utilice el constructor correcto de 6 parámetros:
+                // (int idPartida, Date fecha, Time hora, int puntuacion, Usuario usuario, int idModo)
+                Partidas nuevaPartida = new Partidas(0, fechaSQL, horaSQL, puntosFinales, Usuario.usuarioSesion, idModoActual);
+
+                // Insertamos de forma segura en la base de datos
+                PartidasDAO.addPartidas(nuevaPartida);
+                System.out.println("¡ÉXITO! Partida almacenada correctamente en la tabla 'partidas'.");
+
+            } catch (Exception e) {
+                System.out.println("ERROR CRÍTICO al intentar insertar el registro en PartidasDAO:");
+                e.printStackTrace();
+            }
+        } else {
+            System.out.println("[ANÓNIMO] Jugando como invitado. No se guardan datos en el historial.");
+        }
+    }
+
     @FXML
     void ReiniciarClick(ActionEvent event) {
         partida = new Juego();
+        movimientosJugador = 0; //Reseteamos el contador de movimientos para la nueva partida
         actualizarTextoTurno();
 
         for (Button btn : tableroBotones) {
@@ -191,15 +205,13 @@ public class TableroController {
             }
         }
     }
-    /*
-        Metodo para volver al menu con el btn en pantalla-
-     */
+
     @FXML
     void volverAlMenuClick(javafx.event.ActionEvent event) {
         System.out.println("Partida interrumpida. Volviendo al menú principal...");
         org.example.projecto_final.utils.Utils.cambiarPantalla(event, "/org/example/projecto_final/vistas/hello-view.fxml");
     }
-    // Metodo para que no se pueda sobre escribir las jugadas.
+
     private void bloquearTablero() {
         for (Button btn : tableroBotones) {
             if (btn != null) {
